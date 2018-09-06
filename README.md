@@ -1,4 +1,4 @@
-# Western Console Chess
+# Ruby ORM
 
 ## About
 

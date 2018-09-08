@@ -13,25 +13,27 @@ The project is implemented with the following technologies:
 ## Technical Implementation
 
 Some technical highlights of the app are:
-1. Feature 1
+1. Metaprogramming methods `define_method`, `instance_variable_get` and `instance_variable_set`
 
 ### Feature 1
 
-An instance of Object-Oriented Programming - all pieces inherit from a `Piece` class.  The `Bishop`, `Rook` and `Queen` inherit from the `SlidingPiece` module for multi-tile movement, while the `Knight` and `King` inherit from the `SteppingPiece` module.  
+Implemented attr_accessor getter and setter methods using `define_method`, `instance_variable_get` and `instance_variable_set`
 
 ```ruby
-  // from board.rb
+  // from attr_accessor_object.rb
 
-  def dup
+  class AttrAccessorObject
+    def self.my_attr_accessor(*names)
+      names.each do |name|
+        define_method(name) do
+          instance_variable_get("@#{name}")
+        end
 
-    dup_board = Board.new(false)
-
-    pieces.each do |piece|
-      piece.class.new(piece.color, dup_board, piece.pos)
+        define_method("#{name}=") do |value|
+          instance_variable_set("@#{name}", value)
+        end
+      end
     end
-
-    dup_board
-
   end
 ```
 

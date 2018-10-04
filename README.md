@@ -11,6 +11,7 @@ The project is implemented with the following technologies:
 - `Ruby`
 - `RSpec TDD`
 - `sqlite3`
+- `ActiveSupport`
 
 ## Technical Implementation
 
@@ -21,6 +22,8 @@ Some technical highlights of the app are:
 ```
 $ PRINT_QUERIES=true rspec spec/0000_attr_accessor_object_spec.rb
 ```
+4. SQLObject
+
 
 
 ### Feature 1

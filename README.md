@@ -9,18 +9,26 @@ RedORM is a framework connecting classes to relational database tables.  By usin
 The project is implemented with the following technologies:
 
 - `Ruby`
+- `RSpec TDD`
+- `sqlite3`
 
 ## Technical Implementation
 
 Some technical highlights of the app are:
 1. Metaprogramming methods `define_method`, `instance_variable_get` and `instance_variable_set`
+2. RSpec guides
+3. Option to print all queries and interpolation arguments that get sent to the SQL engine.  
+```
+$ PRINT_QUERIES=true rspec spec/0000_attr_accessor_object_spec.rb
+```
+
 
 ### Feature 1
 
 Implemented attr_accessor getter and setter methods using `define_method`, `instance_variable_get` and `instance_variable_set`
 
 ```ruby
-  // from attr_accessor_object.rb
+  // from 00_attr_accessor_object.rb
 
   class AttrAccessorObject
     def self.my_attr_accessor(*names)

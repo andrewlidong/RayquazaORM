@@ -1,8 +1,8 @@
-# Ruby ORM
+# RedORM
 
 ## About
 
-Ruby ORM is a framework connecting classes to relational database tables.  By using a preconfigured base class along with metaprogramming techniques, RubyORM allows the user to set up important functionality by creating Models, the M in MVC.  Besides having their own functionality of making common queries, models can also be connected to other models via associations.  
+RedORM is a framework connecting classes to relational database tables.  By using a preconfigured base class along with metaprogramming techniques, RedORM allows the user to set up important functionality by creating Models, the M in MVC.  Besides having their own functionality of making common queries, models can also be connected to other models via associations.  
 
 ## Architecture and Technologies
 

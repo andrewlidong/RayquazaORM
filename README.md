@@ -1,8 +1,8 @@
-# RedORM
+# RayquazaORM
 
 ## About
 
-RedORM is a framework connecting classes to relational database tables.  By using a preconfigured base class along with metaprogramming techniques, RedORM allows the user to set up important functionality by creating Models, the M in MVC.  Besides having their own functionality of making common queries, models can also be connected to other models via associations.  
+RayquazaORM is a framework connecting classes to relational database tables.  By using a preconfigured base class along with metaprogramming techniques, RayquazaORM allows the user to set up important functionality by creating Models, the M in MVC.  Besides having their own functionality of making common queries, models can also be connected to other models via associations.  
 
 ## Architecture and Technologies
 
@@ -23,6 +23,12 @@ Some technical highlights of the app are:
 $ PRINT_QUERIES=true rspec spec/0000_attr_accessor_object_spec.rb
 ```
 4. SQLObject
+5. ActiveSupport:
+ActiveSupport (part of Rails) has an inflector library that adds methods to String to help you do this. In particular, look at the String#tableize method. You can require the inflector with require 'active_support/inflector'.
+
+NB: you cannot always infer the name of the table. For example: the inflector library will, by default, pluralize human into humen, not humans. WAT. That's what your ::table_name= is for: so users of SQLObject can override the default, inferred table name.
+
+
 
 
 

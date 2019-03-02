@@ -1,76 +1,140 @@
 # RayquazaORM
+RayquazaORM is a lightweight Object Relational Mapping system inspired by Active Record. 
 
-## About
+Functionality:
+* Interact with the database through a SQLObject
+* Query the database with methods such as all and where
+* Build associations that use joins
 
-<!-- RayquazaORM is a framework connecting classes to relational database tables.  By using a preconfigured base class along with metaprogramming techniques, RayquazaORM allows the user to set up important functionality by creating Models, the M in MVC.  Besides having their own functionality of making common queries, models can also be connected to other models via associations.   -->
+## SQLObject
+The RayquazaORM library uses a class, SQLObject that interacts with the database.  
 
-## Architecture and Technologies
+1. SQLObject can return an array of all records in the database
 
-The project is implemented with the following technologies:
+2. SQLObject can look up a single record by primary key
 
-- `Ruby`
-- `RSpec TDD`
-- `sqlite3`
-- `ActiveSupport`
+3. SQLObject can insert new rows and update rows with appropriate id.  
 
-## Technical Implementation
+## SQLObject
 
-Some technical highlights of the app are:
-1. Metaprogramming methods `define_method`, `instance_variable_get` and `instance_variable_set`
-2. RSpec guides
-3. Option to print all queries and interpolation arguments that get sent to the SQL engine.  
-```
-$ PRINT_QUERIES=true rspec spec/0000_attr_accessor_object_spec.rb
-```
-4. SQLObject
-5. ActiveSupport:
-ActiveSupport (part of Rails) has an inflector library that adds methods to String to help you do this. In particular, look at the String#tableize method. You can require the inflector with require 'active_support/inflector'.
+#### `table_name`
+Gets the name of the table for a class.  
 
-NB: you cannot always infer the name of the table. For example: the inflector library will, by default, pluralize human into humen, not humans. WAT. That's what your ::table_name= is for: so users of SQLObject can override the default, inferred table name.
+#### `table_name=`
+Sets the name of a table.  In the absence of an explicitly set table name, table_name= by default converts the class name to snake_case and pluralizes.  
 
-### Feature 1
+Example:
+```rb
+class Pokemon < SQLObject
+end
 
-Implemented attr_accessor getter and setter methods using `define_method`, `instance_variable_get` and `instance_variable_set`
-
-```ruby
-  // from 00_attr_accessor_object.rb
-
-  class AttrAccessorObject
-    def self.my_attr_accessor(*names)
-      names.each do |name|
-        define_method(name) do
-          instance_variable_get("@#{name}")
-        end
-
-        define_method("#{name}=") do |value|
-          instance_variable_set("@#{name}", value)
-        end
-      end
-    end
-  end
+Pokemon.table_name # => "pokemon"
 ```
 
-### Cursor Controls
+#### `initialize`
+Takes in a single params hash that iterates through each of the `attr_name, value` pairs.  
 
-```ruby
-  def read_char
-    STDIN.echo = false
-    STDIN.raw!
+Example: 
 
-    input = STDIN.getc.chr
-    if input == "\e"
-      input << STDIN.read_nonblock(3) rescue nil
-      input << STDIN.read_nonblock(2) rescue nil
-    end
+```rb
+lugia = Pokemon.new(name: "Hobbes", trainer_id: 123)
+lugia.name #=> "Hobbes"
+lugia.trainer_id #=> 123
+```
+## Queries
 
-    STDIN.echo = true
-    STDIN.cooked!
+#### `all`
 
-    input
-  end
+Fetches all records from the database.  
+
+Example: 
+
+```rb
+class Pokemon < SQLObject
+  finalize!
+end
+
+Pokemon.all
+# SELECT
+#   pokemon.*
+# FROM
+#   pokemon
+
+class PokemonTrainer < SQLObject
+  self.table_name = "pokemon_trainers"
+
+  finalize!
+end
+
+PokemonTrainer.all
+# SELECT
+#   pokemon_trainers.*
+# FROM
+#   pokemon_trainers
+
+class Pokemon < SQLObject
+  self.table_name = "pokemon"
+
+  finalize!
+end
+
+Pokemon.all
+=> [#<Pokemon:0x007fa409ceee38
+  @attributes={:id=>1, :name=>"Hobbes", :trainer_id=>1}>,
+ #<Pokemon:0x007fa409cee988
+  @attributes={:id=>2, :name=>"Smith", :trainer_id=>1}>,
+ #<Pokemon:0x007fa409cee528
+  @attributes={:id=>3, :name=>"Kant", :trainer_id=>2}>]
 ```
 
-## Future Features
-In the future, I plan to add the following features:
+#### `find( id )`
 
-*
+Returns a single object with the given id.  
+
+#### `insert( value )`
+
+Inserts values into table name.  
+
+Example:
+
+```rb
+INSERT INTO
+  table_name (col1, col2, col3)
+VALUES
+  (?, ?, ?)
+```
+
+#### `update( id, value )`
+
+Updates a record's attributes
+
+Example: 
+
+```rb
+UPDATE
+  table_name
+SET
+  col1 = ?, col2 = ?, col3 = ?
+WHERE
+  id = ?
+```
+
+#### `save`
+
+Calls insert or update depending on whether an id is passed or not.  
+
+## Associatable
+
+A module that has methods such as belongs_to and has_many that will be mixed into SQLObject
+
+#### `belongs_to`
+
+Takes in an association name and an options hash, builds an association.  
+
+#### `has_many`
+
+Takes in an association and an options hash, builds an association.  
+
+#### `has_one_through`
+
+Takes an association and an options hash, builds association between models through the use of a joins table.  
